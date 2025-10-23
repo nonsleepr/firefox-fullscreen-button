@@ -1,0 +1,29 @@
+# Build artifacts
+build/
+*.xpi
+
+# devenv
+.devenv/
+.devenv.flake.nix
+devenv.lock
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
