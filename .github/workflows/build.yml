@@ -1,0 +1,63 @@
+name: Build Firefox Extension
+
+on:
+  push:
+    branches: [ main, master ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Extract version
+      id: version
+      run: |
+        if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/}
+        else
+          VERSION=$(jq -r '.version' src/manifest.json)
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Building version: $VERSION"
+    
+    - name: Build extension
+      run: |
+        echo "Building Firefox extension..."
+        mkdir -p build
+        cd src && zip -r ../build/fullscreen-button-${{ steps.version.outputs.version }}.xpi *
+        echo "Extension built: build/fullscreen-button-${{ steps.version.outputs.version }}.xpi"
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: fullscreen-button-${{ steps.version.outputs.version }}
+        path: build/*.xpi
+        retention-days: 30
+  
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    
+    - name: Install web-ext
+      run: npm install -g web-ext
+    
+    - name: Lint extension
+      run: |
+        echo "Linting extension..."
+        web-ext lint --source-dir=src
