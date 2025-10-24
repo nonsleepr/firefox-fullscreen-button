@@ -1,12 +1,15 @@
 {
   "manifest_version": 2,
   "name": "Fullscreen Button",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Toggle fullscreen mode by clicking the extension icon or pressing F11",
   "browser_specific_settings": {
     "gecko": {
       "id": "fullscreen-button@nonsleepr.gmail.com",
-      "strict_min_version": "79.0"
+      "strict_min_version": "79.0",
+      "data_collection_permissions": {
+        "required": ["none"]
+      }
     }
   },
   "permissions": [
